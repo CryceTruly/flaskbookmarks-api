@@ -12,6 +12,7 @@ flask-jwt-extended = "*"
 validators = "*"
 flask-marshmallow = "*"
 flasgger = "*"
+gunicorn = "*"
 
 [dev-packages]
 
