@@ -1,7 +1,6 @@
 from flask import Blueprint, request, jsonify, redirect, current_app
 from src.database.models import User,db
 from werkzeug.security import generate_password_hash, check_password_hash
-from validate_email import validate_email
 from flask_jwt_extended import create_access_token,jwt_required,create_refresh_token, get_jwt_identity
 from flasgger import swag_from
 
@@ -23,7 +22,7 @@ def create_user():
     if len(username)<3:
         return jsonify({'username':['usernames should be at least 3 charatcers long']}),400
 
-    if not validate_email(email):
+    if not validators.email(email):
         return jsonify({'email':['Email is of invalid format']}),400
     
     if not username.isalnum() or " " in username:
