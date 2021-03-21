@@ -10,7 +10,6 @@ flask-bcrypt = "*"
 validate-email = "*"
 flask-jwt-extended = "*"
 validators = "*"
-flask-marshmallow = "*"
 flasgger = "*"
 gunicorn = "*"
 

@@ -1,2 +1,1 @@
-web: gunicorn run:src/main.py
-
+web: gunicorn run:app
