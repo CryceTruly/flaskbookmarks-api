@@ -1,0 +1,37 @@
+UPDATE a single Bookmark
+---
+tags:
+  - Bookmarks
+
+parameters:
+  - in: header
+    name: Authorization
+    required: true
+    
+  - in: path
+    name: id
+    required: true
+
+  - name: body
+    description: The body should contain the Bookmark data
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "url"
+      properties:
+        url:
+          type: "url"
+          format: url
+          example: "https://www.programiz.com/"
+        body:
+          type: "string"
+          example: this site is cool
+responses:
+  200:
+    description: Bookmark updated
+
+  400:
+    description: Fails to update due to bad request data
+  

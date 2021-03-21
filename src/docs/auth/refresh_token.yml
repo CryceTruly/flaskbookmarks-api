@@ -1,0 +1,17 @@
+Refresh an access token
+---
+tags:
+  - Authentication
+parameters:
+  - summary: The Authentication header should be a refresh token
+    description: The Authentication header should be a refresh token
+    in: header
+    name: Authorization
+    required: true
+responses:
+  200:
+    description: A user gets a new access token
+
+  401:
+    description: A user supplies a bad refresh token
+    

@@ -1,0 +1,20 @@
+DELETE a single Bookmark
+---
+tags:
+  - Bookmarks
+parameters:
+  - in: header
+    name: Authorization
+    required: true
+
+  - in: path
+    name: id
+    required: true
+
+responses:
+  204:
+    description: Record was deleted
+
+  404:
+    description: Record was not found
+   

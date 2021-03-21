@@ -1,0 +1,21 @@
+GET a single Bookmark
+---
+tags:
+  - Bookmarks
+
+parameters:
+  - in: header
+    name: Authorization
+    required: true
+
+  - in: path
+    name: id
+    required: true
+
+responses:
+  200:
+    description: Record object is returned
+
+  404:
+    description: Record was not found
+   
