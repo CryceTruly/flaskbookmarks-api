@@ -17,6 +17,18 @@ get:
 
 post:
   parameters:
+    - in: query
+      name: page
+      schema:
+        type: integer
+      description: The page for the result set
+
+    - in: query
+      name: per_page
+      schema:
+        type: integer
+      description: The numbers of items to return per page
+
     - in: header
       name: Authorization
       required: true

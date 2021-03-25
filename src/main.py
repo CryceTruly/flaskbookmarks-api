@@ -1,13 +1,14 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify,redirect
 from flask_sqlalchemy import SQLAlchemy
 from src.bookmarks.views import bookmarks
 from src.authentication.views import auth
 import os
-from src.database.models import db
+from src.database.models import db,Bookmark
 from flask_jwt_extended import JWTManager
-from flask_marshmallow import Marshmallow 
 from flask_cors import CORS
-from flasgger import APISpec, Schema, Swagger, fields
+from flasgger import APISpec, Schema, Swagger, fields, swag_from
+from src.constants.status.main import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR
+
 
 swagger_config = {
     "headers": [
@@ -39,7 +40,6 @@ template = {
     "termsOfService": "www.twitter.com/crycetruly",
     "version": "1.0"
   },
-  "host":"http://127.0.0.1:5000",
   "basePath": "/api/v1",  # base bash for blueprint registration
   "schemes": [
     "http",
@@ -77,6 +77,25 @@ swagger = Swagger(app, config=swagger_config,template=template)
 app.register_blueprint(bookmarks)
 app.register_blueprint(auth)
 
+
+@app.route('/<short_url>')
+@swag_from('./docs/bookmarks/redirect.yml')
+def redirect_to_url(short_url):
+    link = Bookmark.query.filter_by(short_url=short_url).first_or_404()
+    link.visits = link.visits + 1
+    db.session.commit()
+    return redirect(link.url)
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return jsonify({"Error": 'not found'}), HTTP_404_NOT_FOUND
+
+
+
+@app.errorhandler(500)
+def page_not_found(e):
+    return jsonify({"Error": 'Issue on server occurred'}), HTTP_500_INTERNAL_SERVER_ERROR
 
 
 

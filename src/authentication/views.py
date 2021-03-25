@@ -3,6 +3,8 @@ from src.database.models import User,db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token,jwt_required,create_refresh_token, get_jwt_identity
 from flasgger import swag_from
+import validators
+from src.constants.status.main import HTTP_200_OK,HTTP_201_CREATED,HTTP_204_NO_CONTENT,HTTP_401_UNAUTHORIZED,HTTP_409_CONFLICT,HTTP_400_BAD_REQUEST
 
 
 auth = Blueprint('auth', __name__)
@@ -17,22 +19,22 @@ def create_user():
     pw_hash = generate_password_hash(password)
 
     if len(password)<6:
-        return jsonify({'password':['Passwords should be at least 6 charatcers long']}), 400
+        return jsonify({'password':['Passwords should be at least 6 charatcers long']}), HTTP_400_BAD_REQUEST
 
     if len(username)<3:
-        return jsonify({'username':['usernames should be at least 3 charatcers long']}),400
+        return jsonify({'username':['usernames should be at least 3 charatcers long']}),HTTP_400_BAD_REQUEST
 
     if not validators.email(email):
-        return jsonify({'email':['Email is of invalid format']}),400
+        return jsonify({'email':['Email is of invalid format']}),HTTP_400_BAD_REQUEST
     
     if not username.isalnum() or " " in username:
-        return jsonify({'username':['username should only contain alphanumeric characters,no spaces']}),400
+        return jsonify({'username':['username should only contain alphanumeric characters,no spaces']}),HTTP_400_BAD_REQUEST
 
     if User.query.filter_by(email=email).first() is not None:
-        return jsonify({'email':['Email is taken']}),409
+        return jsonify({'email':['Email is taken']}),HTTP_409_CONFLICT
 
     if  User.query.filter_by(username=username).first() is not None:
-        return jsonify({'username':['username is taken']}),409
+        return jsonify({'username':['username is taken']}),HTTP_409_CONFLICT
 
     user=User(username=username, email=email,password=pw_hash)
     db.session.add(user)
@@ -42,7 +44,7 @@ def create_user():
     return jsonify({'user':{
         'username':username,
         'email':email,
-    }}),201
+    }}),HTTP_201_CREATED
 
 
 @auth.route('/api/v1/auth/login', methods=['POST'])
@@ -63,12 +65,12 @@ def login():
                 'email':user.email,
                 'token':access_token,
                 'refresh_token':refresh_token,
-            }}),200
+            }}),HTTP_200_OK
 
     return jsonify({
         'message':"Invalid credentials",
         
-    }),401
+    }),HTTP_401_UNAUTHORIZED
 
 @auth.route("/api/v1/auth/token/refresh", methods=["POST"])
 @jwt_required(refresh=True)
@@ -76,5 +78,5 @@ def login():
 def refresh():
     identity = get_jwt_identity()
     access_token = create_access_token(identity=identity)
-    return jsonify({'access_token': access_token})
+    return jsonify({'access_token': access_token}),HTTP_200_OK
 
