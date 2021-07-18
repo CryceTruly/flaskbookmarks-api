@@ -1,18 +1,16 @@
-from flask import Blueprint, request, jsonify, redirect, render_template
-from flask_cors import CORS
+from flask import Blueprint, request, jsonify
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
-from src.database.models import Bookmark,User,db
+from src.database import Bookmark,db
 import validators
 from flasgger import swag_from
-from src.constants.status.main import HTTP_200_OK,HTTP_201_CREATED,HTTP_204_NO_CONTENT,HTTP_301_MOVED_PERMANENTLY,HTTP_403_FORBIDDEN,HTTP_400_BAD_REQUEST,HTTP_404_NOT_FOUND
+from src.constants.http_status_codes import HTTP_200_OK,HTTP_201_CREATED,HTTP_204_NO_CONTENT,HTTP_400_BAD_REQUEST,HTTP_404_NOT_FOUND
 
-bookmarks = Blueprint('bookmarks', __name__)
+bookmarks = Blueprint('bookmarks', __name__,url_prefix="/api/v1")
 
-
-@bookmarks.route('/api/v1/bookmarks/', methods=['POST','GET'])
+@bookmarks.route('/bookmarks/', methods=['POST','GET'])
 @jwt_required()
-@swag_from('../docs/bookmarks/get_all.yml')
+@swag_from('./docs/bookmarks/get_all.yml')
 def get_all_bookmarks():
 
     current_user=get_jwt_identity()
@@ -70,9 +68,9 @@ def get_all_bookmarks():
 
 
 
-@bookmarks.route('/api/v1/bookmarks/<int:id>', methods=['GET'])
+@bookmarks.route('/bookmarks/<int:id>', methods=['GET'])
 @jwt_required()
-@swag_from('../docs/bookmarks/get_one.yml')
+@swag_from('./docs/bookmarks/get_one.yml')
 def get_bookmark(id):
     current_user=get_jwt_identity()
     bookmark=Bookmark.query.filter_by(id=id,user_id=current_user).first()
@@ -93,9 +91,9 @@ def get_bookmark(id):
 
 
 
-@bookmarks.route('/api/v1/bookmarks/<int:id>', methods=['DELETE'])
+@bookmarks.route('/bookmarks/<int:id>', methods=['DELETE'])
 @jwt_required()
-@swag_from('../docs/bookmarks/delete_one.yml')
+@swag_from('./docs/bookmarks/delete_one.yml')
 def delete_bookmark(id):
     current_user=get_jwt_identity()
     bookmark=Bookmark.query.filter_by(id=id,user_id=current_user).first()
@@ -107,9 +105,9 @@ def delete_bookmark(id):
     return jsonify({}),HTTP_204_NO_CONTENT
 
 
-@bookmarks.route('/api/v1/bookmarks/<int:id>', methods=['PUT','PATCH'])
+@bookmarks.route('/bookmarks/<int:id>', methods=['PUT','PATCH'])
 @jwt_required()
-@swag_from('../docs/bookmarks/edit_one.yml')
+@swag_from('./docs/bookmarks/edit_one.yml')
 def edit_bookmark(id):
     current_user=get_jwt_identity()
     bookmark=Bookmark.query.filter_by(id=id,user_id=current_user).first()
@@ -139,9 +137,9 @@ def edit_bookmark(id):
 
 
 
-@bookmarks.route('/api/v1/bookmarks/stats')
+@bookmarks.route('/bookmarks/stats')
 @jwt_required()
-@swag_from('../docs/bookmarks/stats.yml')
+@swag_from('./docs/bookmarks/stats.yml')
 def stats():
     current_user=get_jwt_identity()
     items = Bookmark.query.filter_by(user_id=current_user).all()

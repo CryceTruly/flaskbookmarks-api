@@ -12,6 +12,10 @@ flasgger = "*"
 gunicorn = "*"
 flask-sqlalchemy = "*"
 flask-cors = "*"
+autopep8 = "*"
+pylint = "*"
+pylint-flask = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 

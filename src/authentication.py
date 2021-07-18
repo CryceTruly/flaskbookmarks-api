@@ -1,18 +1,17 @@
-from flask import Blueprint, request, jsonify, redirect, current_app
-from src.database.models import User,db
+from flask import Blueprint, request, jsonify, redirect
+from src.database import User,db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token,jwt_required,create_refresh_token, get_jwt_identity
 from flasgger import swag_from
 import validators
-from src.constants.status.main import HTTP_200_OK,HTTP_201_CREATED,HTTP_204_NO_CONTENT,HTTP_401_UNAUTHORIZED,HTTP_409_CONFLICT,HTTP_400_BAD_REQUEST
+from src.constants.http_status_codes import HTTP_200_OK,HTTP_201_CREATED,HTTP_401_UNAUTHORIZED,HTTP_409_CONFLICT,HTTP_400_BAD_REQUEST
 
 
 auth = Blueprint('auth', __name__)
 
 @auth.route('/api/v1/auth/signup', methods=['POST'])
-@swag_from('../docs/auth/register.yml')
+@swag_from('./docs/auth/register.yml')
 def create_user():
-
     username=request.json['username']
     email=request.json['email']
     password=request.json['password']
@@ -48,7 +47,7 @@ def create_user():
 
 
 @auth.route('/api/v1/auth/login', methods=['POST'])
-@swag_from('../docs/auth/login.yml')
+@swag_from('./docs/auth/login.yml')
 def login():
     email=request.json.get('email','')
     password=request.json.get('password','')
@@ -74,7 +73,7 @@ def login():
 
 @auth.route("/api/v1/auth/token/refresh", methods=["POST"])
 @jwt_required(refresh=True)
-@swag_from('../docs/auth/refresh_token.yml')
+@swag_from('./docs/auth/refresh_token.yml')
 def refresh():
     identity = get_jwt_identity()
     access_token = create_access_token(identity=identity)
