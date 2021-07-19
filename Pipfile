@@ -4,9 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask = "*"
 python-dotenv = "*"
-flask-jwt-extended = "*"
 validators = "*"
 flasgger = "*"
 gunicorn = "*"

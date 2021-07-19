@@ -7,9 +7,9 @@ import validators
 from src.constants.http_status_codes import HTTP_200_OK,HTTP_201_CREATED,HTTP_401_UNAUTHORIZED,HTTP_409_CONFLICT,HTTP_400_BAD_REQUEST
 
 
-auth = Blueprint('auth', __name__)
+auth = Blueprint('auth', __name__,url_prefix="/api/v1/auth")
 
-@auth.route('/api/v1/auth/signup', methods=['POST'])
+@auth.post('/signup')
 @swag_from('./docs/auth/register.yml')
 def create_user():
     username=request.json['username']
@@ -46,7 +46,7 @@ def create_user():
     }}),HTTP_201_CREATED
 
 
-@auth.route('/api/v1/auth/login', methods=['POST'])
+@auth.post('/login')
 @swag_from('./docs/auth/login.yml')
 def login():
     email=request.json.get('email','')
@@ -71,7 +71,7 @@ def login():
         
     }),HTTP_401_UNAUTHORIZED
 
-@auth.route("/api/v1/auth/token/refresh", methods=["POST"])
+@auth.post("/token/refresh")
 @jwt_required(refresh=True)
 @swag_from('./docs/auth/refresh_token.yml')
 def refresh():
